@@ -1,0 +1,40 @@
+hostname R1
+interface gigabitEthernet0/0
+ no ip address
+ no shutdown
+exit
+interface gigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+exit
+interface gigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ ip access-group 120 in
+exit
+interface gigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ ip access-group 130 in
+exit
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp excluded-address 192.168.20.1 192.168.20.20
+ip dhcp excluded-address 192.168.30.1 192.168.30.20
+ip dhcp pool IT_POOL
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+exit
+ip dhcp pool HR_POOL
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+exit
+ip dhcp pool SALES_POOL
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.1
+exit
+access-list 120 deny ip 192.168.20.0 0.0.0.255 192.168.30.0 0.0.0.255
+access-list 120 permit ip any any
+access-list 130 deny ip 192.168.30.0 0.0.0.255 192.168.20.0 0.0.0.255
+access-list 130 permit ip any any
+end
+write memory
